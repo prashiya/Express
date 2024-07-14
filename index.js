@@ -10,7 +10,7 @@ const ErrorHandler= require('./error/Errorhandler');
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
-// parse application/json
+// parse application/json fg
 app.use(bodyParser.json())
 
 const PORT= process.env.PORT || 8080;

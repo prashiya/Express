@@ -1,8 +1,8 @@
-class Errorhandler {
-     constructor(status, msg)
+class ErrorHandler {
+     constructor(status, message)
      {
          this.status=status;
-         this.msg=msg;
+         this.message=message;
      }
 
      static validationError(message = 'All fields are required!') {
@@ -24,4 +24,4 @@ class Errorhandler {
 
 }
 
-module.exports=Errorhandler;
+module.exports=ErrorHandler;

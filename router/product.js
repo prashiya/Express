@@ -1,57 +1,73 @@
-const router= require ('express').Router();
+const router = require('express').Router();
+const ProductService = require('../service/ProductService');
 
-const ErrorHandler= require(  '../error/Errorhandler' );
-let product1=require('../productdata');
+router.get('/api/product', (req, res, next) => {
+    try {
+        const products = ProductService.getAllProduct();
+        return res.json(products);
+    } catch (err) {
+        next(err);
+    }
+});
 
+router.post('/api/product', (req, res, next) => {
+    const { name, price } = req.body;
 
-router.get('/api/product', (req,res)=> {
-        res.json(product1);
+    try {
+        const newProduct = ProductService.addProduct(name, price);
 
- });            
-
- router.post('/api/products', (req, res) => {
-    try{
-        const {name, price}= req.body;
-
-        if(!name || !price)
-        {
-          return ErrorHandler.validationError('All fields are required');
-        }
- 
-        const newproduct={
-           name,
-           price,
-           id: new Date().getTime().toString()
-        }
- 
-        product1.push(newproduct);
- 
         return res.status(201).send({
             error: false,
-            message: "product is added succeesfully",
-            data: newproduct
+            message: "Product added successfully",
+            data: newProduct
         });
-
-    }catch(err){
-
-        console.log('Error::log::>>add product::>',err);
-
-        return res.status(400).send({
-            error:true,
-            message:"something went wrong"});
+    } catch (err) {
+        next(err);
     }
-      
 });
 
- router.delete('/api/product/:productid', (req,res) => {
-       
-    product1= product1.filter((products)=> req.params.productid !== products.id);
+router.delete('/api/product/:productId', (req, res, next) => {
+    const productId = (req.params.productId);
 
-    res.json({status: 'OK'});
-
+    try {
+        const result = ProductService.deleteProduct(productId);
+        return res.json(result);
+    } catch (err) {
+        next(err);
+    }
 });
 
-module.exports=router;
+router.put('/api/product/:productId', (req, res, next) => {
+    const productId = (req.params.productId);
+    const updatedProduct = req.body;
+    //updatedProduct.price = parseInt(updatedProduct.price, 10);
 
+    try {
+        const updated = ProductService.updateProduct(productId, updatedProduct);
+        return res.status(200).send({
+            error: false,
+            message: "Product updated successfully",
+            data: updated
+        });
+    } catch (err) {
+        next(err);
+    }
+});
 
+router.patch('/api/product/:productId', (req, res, next) => {
+    const productId = (req.params.productId);
+    const updatedFields = req.body;
 
+    try {
+        const updated = ProductService.patchProduct(productId, updatedFields);
+       return res.status(200).send({
+            error: false,
+            message: "Product patched successfully",
+            data: updated
+        });
+    } catch (err) {
+        next(err);
+    }
+});
+
+module.exports = router;

@@ -6,7 +6,7 @@ const productRouter= require('./router/product');
 
 const courseRouter= require('./router/courses');
 
-const ErrorHandler= require('./error/Errorhandler');
+const ErrorHandler= require('./error/ErrorHandler');
 
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -21,11 +21,8 @@ app.use(express.json());
 app.use(courseRouter);  
 app.use(productRouter);
 
-app.use((req,rest)=> {
-    return rest.json({ message: 'page not found!'});
- })
 
- app.use((err,req,res) =>{
+ app.use((err,req,res,next) =>{
 
     if(err instanceof ErrorHandler)
      {
@@ -45,7 +42,14 @@ app.use((req,rest)=> {
             }
         });
     }
- })
+ });
+
+ app.use((req,rest)=> {
+    return rest.json({ message: 'page not found!'});
+ });
+
+
+
 
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
